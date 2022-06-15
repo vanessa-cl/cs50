@@ -21,8 +21,6 @@ int encipherText(string text, string key);
 
 int main(int argc, string argv[])
 {
-    string key = argv[1];
-
     //will describe how to use the program if the input has more than one argument
     if (argc != 2)
     {
@@ -31,7 +29,7 @@ int main(int argc, string argv[])
     }
 
     //checks if the key is bigger than the number of letters of the alphabet
-    if (strlen(key) < 26 || strlen(key) > 26)
+    if (strlen(argv[1]) < 26 || strlen(argv[1]) > 26)
     {
         printf("The key must contain 26 characters \n");
         return 1;
@@ -39,39 +37,45 @@ int main(int argc, string argv[])
 
     char keyLetters[26];
     //iterate the key inserted to check if it is a valid key
-    for (int i = 0, n = strlen(key); i < n; i++)
+    for (int i = 0, n = strlen(argv[1]); i < n; i++)
     {
-        //converts the key to uppercase
-        key[i] = toupper(key[i]);
-
         //checks if a character is not alphabetic
-        if (!isalpha(key[i]))
+        if (!isalpha(argv[1][i]))
         {
             printf("The key must contain only alphabetic characters\n");
             return 1;
         }
 
-        //checks for repeated characters in the key
-        for (int j = 0, m = strlen(keyLetters); j < 26; j++)
+        //checks for lowercase characters
+        if (argv[1][i] >= A_LOW_LETTER && argv[1][i] <= Z_LOW_LETTER)
         {
-            if (key[i] == keyLetters[j])
+            //converts the key to uppercase
+            argv[1][i] = toupper(argv[1][i]);
+        }
+
+        //checks for repeated characters in the key
+        for (int j = 0; j < 26; j++)
+        {
+            if (argv[1][i] == keyLetters[j])
             {
+                printf("Key: %c\n", argv[1][i]);
+                printf("Key Letters: %c\n", keyLetters[j]);
                 printf("The key must not contain repeated letters\n");
                 return 1;
             }
+            keyLetters[j] = argv[1][i];
         }
-        keyLetters[i] = key[i];
     }
 
     //asks the user for the text to encipher
     string inputText = get_string("plaintext: ");
-    encipherText(inputText, key);
+    encipherText(inputText, argv[1]);
 }
 
 int encipherText(string text, string key)
 {
     //array to store the new text
-    char cipherText[strlen(text)];
+    char cipherText[strlen(text) + 1];
 
     //loops through the text characters
     for (int i = 0, n = strlen(text); i < n; i++)
